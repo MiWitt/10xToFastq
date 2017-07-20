@@ -141,7 +141,7 @@ int main(int argc, char** argv)
     cerr << "stats:" << endl
          << "paired reads worked: " << worked << endl
          << "paired reads failed: " << failed << endl
-         << "seqencing error within index: " << seq_eeror_in_idx << endl;
+         << "sequencing error within index: " << seq_eeror_in_idx << endl;
     return 0;
 }
 
