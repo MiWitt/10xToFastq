@@ -11,11 +11,15 @@
 #include <libgen.h>
 #include <zlib.h>
 #include <gzstream.h>
-#include <mytools.h>
+#include <map>
+#include <vector>
+#include <string>
 #include <string.h>
 
-
+// https://github.com/eile/tclap
 #include <tclap/CmdLine.h>
+
+// https://github.com/arq5x/filo/tree/master/src/common/gzstream
 
 
 
@@ -24,6 +28,30 @@ using namespace std;
 
 #define READONEFILE "--R1"
 #define READTWOFILE "--R2"
+
+vector<string> GetParsedLine(string str,const string& sep)
+{
+    vector<string> tokens;
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(sep, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(sep, lastPos);
+
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        if(str.length() > pos && sep.find(str[pos]) != string::npos )
+            lastPos=pos+1;
+        else
+            lastPos = str.find_first_not_of(sep, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(sep, lastPos);
+    }
+    return tokens;
+}
+
 /*
  * 
  */
@@ -47,23 +75,23 @@ int main(int argc, char** argv)
         unsigned int idxLength = indexLength.getValue();
 
         if(fileR1.substr(fileR1.length()-9,9).compare(".fastq.gz") != 0 || fileR2.substr(fileR2.length()-9,9).compare(".fastq.gz") != 0)
-            throw CMyException("Only *.fastq.gz files are allowed for input");
+            throw std::string("Only *.fastq.gz files are allowed for input");
         
         igzstream inR1(fileR1.c_str());
         igzstream inR2(fileR2.c_str());
         if(!inR1)
-            throw CMyException(string("failed to open ")+fileR1);
+            throw std::string(string("failed to open ")+fileR1);
         if(!inR2)
-            throw CMyException(string("failed to open ")+fileR1);
+            throw std::string(string("failed to open ")+fileR1);
 
         string outfileR1 = fileR1.substr(0,fileR1.length()-9).append(".recoded.fastq.gz");
         string outfileR2 = fileR2.substr(0,fileR2.length()-9).append(".recoded.fastq.gz");
         ogzstream  outR1(outfileR1.c_str());
         ogzstream  outR2(outfileR2.c_str());
         if(!outR1)
-            throw CMyException(string("failed to open ")+outfileR1);
+            throw std::string(string("failed to open ")+outfileR1);
         if(!outR2)
-            throw CMyException(string("failed to open ")+outfileR2);
+            throw std::string(string("failed to open ")+outfileR2);
 
         map<string, size_t> index;
         map<string, pair<string,string> > header;
@@ -88,7 +116,7 @@ int main(int argc, char** argv)
                     seq_eeror_in_idx++;
                     continue;
                 }
-                vector<string> split = CMyTools::GetParsedLine(strR1_lines[0]," ");
+                vector<string> split = GetParsedLine(strR1_lines[0]," ");
                 map<string, size_t>::iterator iterIdx = index.find(idx);
                 map<string, pair<string,string> >::iterator iterHeader = header.end();
                 if(iterIdx == index.end())
@@ -141,9 +169,9 @@ int main(int argc, char** argv)
     {
         cerr << "error: " << e.what() << " in " << argv[0] << endl;
     }
-    catch(CMyException &e)
+    catch(std::string &e)
     {
-        cerr << "error: " << e.what() << " in " << argv[0] << endl;
+        cerr << "error: " << e << " in " << argv[0] << endl;
     }
     catch(...)
     {
