@@ -26,8 +26,10 @@ And update the submodules:
 
 `git submodule update`
 
-To compile the tool run make:
+To compile the tool run make after running a clean (got issues from the sub modules when not cleaning before):
 
+`make clean`
+<br />
 `make`
 
 To update the code, run git update inside of the local clone:
