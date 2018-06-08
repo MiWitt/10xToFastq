@@ -6,7 +6,7 @@
 
 This software reads 10x sequencing files and searches for the molecular identifier in the read. All reads originating from the same droplet will get the same fastq header with different paired end numbering. 
 
-This software uses [gzstream from the filo project ](https://github.com/arq5x/filo) and [TCLAP](https://github.com/eile/tclap) for argument parsing.
+This software uses [gzstream from the filo project ](https://github.com/arq5x/filo) and [TCLAP](https://github.com/eile/tclap) for argument parsing. Both come with their own licences ...
 
 ## Installing the pipeline
 
@@ -25,6 +25,7 @@ And update the submodules:
 To compile the tool enter the repository directory and run make:
 
 `cd 10xToFastq`
+<br />
 `make`
 
 To update the code, run git update inside of the local clone:
