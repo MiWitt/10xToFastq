@@ -8,7 +8,7 @@ This software reads 10x sequencing files and searches for the molecular identifi
 
 This software uses [gzstream from the filo project ](https://github.com/arq5x/filo) and [TCLAP](https://github.com/eile/tclap) for argument parsing. Both come with their own licences. We assume a system wide zlib is installed.
 
-## Installing the pipeline
+## Installing the tool
 
 To install this pipeline, simply clone the repository to a location:
 
